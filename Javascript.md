@@ -14,6 +14,15 @@ no way, endorses or supports RPS or OceansMap.
 The original Google Style guidelines can be found
 [here](https://google.github.io/styleguide/jsguide.html)
 
+# Table of Contents
+
+1. [Introduction](#1-introduction)
+  
+  1.1 [Terminology Notes](#11-terminology-notes)
+
+  1.2 [Guide Notes](#12-guide-notes)
+
+
 # 1. Introduction
 
 This document serves as the coding standards for source code in the JavaScript
