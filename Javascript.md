@@ -165,6 +165,216 @@ Example:
 
 # 4. Formatting
 
+## 4.1 Braces
+
+### 4.1.1 Braces are used for all control structures
+
+Braces are required for all control structures (i.e. `if`, `else`, `for`, `do`,
+`while`, as well as any others), even if the body contains only a single
+statement. The first statement of a non-empty block must begin on its own line:
+
+illegal:
+
+```
+// Illegal
+if (someVeryLongCondition()) 
+  doSomething();
+
+// Very illegal
+for (var i = 0; i < foo.length; i++) bar(foo[i]);
+```
+
+### 4.1.2 Nonempty blocks: K&R style
+
+Braces follow the Kernighan and Ritchie style ("[Egyption brackets](https://blog.codinghorror.com/new-programming-jargon/)")
+for _nonempty_ blocks and block-like constructs.
+
+  - No line break before the opening brace
+  - Line break after the opening brace.
+  - Line break before the closing brace.
+  - Line break after the closing brace _if_ that brace terminates a statement
+    or the body of a function or class statement, or a class method.
+    Specifically, there is _no_ line break after the brace if it is followed by
+    `else`, `catch`, `while`, or a comma, semicolon, or right-parenthesis.
+
+
+Example:
+
+```javascript
+var InnerClass = function() {};
+
+/**
+ * Example Method
+ * @param {number} foo
+ */
+InnerClass.prototype.method = function(foo) {
+  if (condition(foo)) {
+    try {
+      // Note: this might fail.
+      something();
+    } catch (err) {
+      recover();
+    }
+  }
+};
+```
+
+### 4.1.3 Empty blocks: may be concise
+
+An empty block or block-like construct may be closed immediately after it is
+opened, with no characters, space, or line break in between (i.e. `{}`),
+**unless** it is a part of a *multi-block statement* (one that directly
+contains multiple blocks: `if`/`else` or `try`/`catch`/`finally`).
+
+Example:
+
+```javascript
+function doNothing() {}
+```
+
+Illegal:
+
+```javascript
+if (condition) {
+  // ...
+} else if (otherCondition) {} else {
+  // ...
+}
+
+try {
+  // ...
+} catch (e) {}
+```
+
+## 4.2 Block indentation: +2 spaces
+
+Each time a new block or block-like construct is opened, the indent increases
+by two spaces. When the block ends, the indent returns to the previous indent
+level. The indent level applies to both code and comments throughout the block.
+
+### 4.2.1 Array literals: optionally "block-like"
+
+Any array literal may optionally be formatted as if it were a "block-like construct." For example, the following are all valid (**not** an exhaustive list):
+
+```javascript
+var a = [
+  0, 1, 2,
+];
+
+var b =
+    [0, 1, 2];
+    const c = [0, 1, 2];
+
+someMethod(foo, [
+  0,
+  1,
+  2,
+], bar);
+```
+
+### 4.2.2 Object literals: optionally "block-like"
+
+
+Any object literal may optionally be formatted as if it were a “block-like
+construct.” The same examples apply as 4.2.1 Array literals: optionally
+block-like. For example, the following are all valid (**not** an exhaustive list):
+
+```
+var a = {
+  a: 0, b: 1
+};
+
+var b =
+    {a: 0, b: 1};
+
+var c = {a: 0, b: 1};
+
+someMethod(foo, {
+  a: 0,
+  b: 1,
+}, bar);
+
+```
+
+### 4.2.3 Class Literals
+
+We do not currently support ECMA Script 6 syntax for class literals due to
+[browser incompatibilities](https://kangax.github.io/compat-table/es6/). 
+
+### 4.2.4 Function expressions
+
+When declaring an anonymous function in the list of arguments for a function
+call, the body of the function is indented two spaces more than the preceding
+indentation depth.
+
+Example:
+```javascript
+
+prefix.something.reallyLongFunctionName('whatever', function(a1, a2)  {
+  // Indent the function body +2 relative to indentation depth
+  // of the 'prefix' statement one line above.
+  if (a1.equals(a2)) {
+    someOtherLongFunctionName(a1);
+  } else {
+    andNowForSomethingCompletelyDifferent(a2.parrot);
+  }
+});
+
+some.reallyLongFunctionCall(arg1, arg2, arg3)
+    .thatsWrapped()
+    .then(function(result) {
+      // Indent the function body +2 relative to the indentation depth
+      // of the '.then()' call.
+      if (result) {
+        result.use();
+      }
+    });
+```
+
+### 4.2.5 Switch statements
+
+As with any other block, the contents of a switch block are indented +2.
+
+After a switch label, a newline appears, and the indentation level is increased
++2, exactly as if a block were being opened. An explicit block may be used if
+required by lexical scoping. The following switch label returns to the previous
+indentation level, as if a block had been closed.
+
+A blank line is optional between a `break` and the following case.
+
+Example:
+
+```javascript
+switch (animal) {
+  case Animal.BANDERSNATCH:
+    handleBandersnatch();
+    break;
+
+  case Animal.JABBERWOCK:
+    handleJabberwock();
+    break;
+
+  default:
+    throw new Error('Unknown animal');
+}
+```
+
+## 4.3 Statements
+
+### 4.3.1 One statement per line
+
+Each statement is followed by a line-break.
+
+### 4.3.2 Semicolons are required
+
+Every statement must be terminated with a semicolon. Relying on automatic semicolon insertion is forbidden.
+
+## 4.4 Column Limit
+
+To be discussed and determined later. For now try to keep statements under 80
+except where it's not impossible (for example a long URL) or when doing so
+would reduce code readability.
+
 # 5. Language Features
 
 # 6. Naming
