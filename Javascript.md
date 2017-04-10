@@ -6,6 +6,7 @@ developing OceansMap in a distributed environment.
 Copyright 2017 RPS Group Plc
 See LICENSE for details
 
+
 <style>
 .tip {
   background-color: #fffbd9;
@@ -18,8 +19,8 @@ See LICENSE for details
   padding: 6px 8px 6px 10px;
   border-left: 6px solid #36c;
 }
-
 </style>
+
 
 This document is a modified version of Google's Javascript style guide. The
 structure and language of the document is very similar to Google's but
@@ -33,14 +34,29 @@ The original Google Style guidelines can be found
 
 1. [Introduction](#1-introduction)
   
-  1. [Terminology Notes](#11-terminology-notes)
+    1. [Terminology Notes](#11-terminology-notes)
 
-  2. [Guide Notes](#12-guide-notes)
+    2. [Guide Notes](#12-guide-notes)
 
 2. [Source file basics](#2-source-file-basics)
   
-  1. [File Name](#21-file-name)
+    1. [File Name](#21-file-name)
 
+    2. [File encoding: UTF-8](#22-file-encoding-utf-8)
+    3. [Special Characters](#23-special-characters)
+
+3. [Source file structure](#3-source-file-structure)
+
+4. [Formatting](#4-formatting)
+
+    1. [Braces](#41-braces)
+    2. [Block indentation: +2 spaces](#42-block-indentation-2-spaces)
+    3. [Statements](#43-statements)
+    4. [Column Limit](#44-column-limit)
+    5. [Line-wrapping](#45-line-wrapping)
+    6. [Whitespace](#46-whitespace)
+    7. [Grouping parentheses: recommended](#47-grouping-parentheses-recommended)
+    8. [Comments](#48-comments)
 
 # 1. Introduction
 
