@@ -683,6 +683,179 @@ TODO(b/6002235): remove the "Last visitors" feature
 We do not currently support ECMA Script 6 syntax for class literals due to
 [browser incompatibilities](https://kangax.github.io/compat-table/es6/). 
 
+### 5.1.2 One variable per declaration
+
+Every local variable declaration declares only one variable: declarations such as `let a = 1, b = 2;` are not used.
+
+### 5.1.3 Declared when needed, initialized as soon as possible
+
+Local variables are **not** habitually declared at the start of their
+containing block or block-like construct. Instead, local variables are declared
+close to the point they are first used (within reason), to minimize their
+scope.
+
+### 5.1.4 Declare types as needed
+
+JSDoc type annotations may be added either on the line above the declaration, or else inline before the variable name.
+
+Example:
+
+```javascript
+const /** !Array<number> */ data = [];
+
+/** @type {!Array<number>} */
+const data = [];
+```
+
+<p class="tip">
+Tip: There are many cases where the compiler can infer a templatized type but
+not its parameters. This is particularly the case when the initializing literal
+or constructor call does not include any values of the template parameter type
+(e.g., empty arrays, objects, `Map`s, or `Set`s), or if the variable is modified in
+a closure. Local variable type annotations are particularly helpful in these
+cases since otherwise the compiler will infer the template parameter as
+unknown.
+</p>
+
+## 5.2 Array literals
+
+### 5.2.1 Use trailing commas
+
+Include a trailing comma whenever there is a line break between the final element and the closing bracket.
+
+Example:
+
+```javascript
+var values = [
+  'first value',
+  'second value',
+];
+```
+
+### 5.2.2 Do not use the variadic `Array` constructor
+
+The constructor is error-prone if arguments are added or removed. Use a literal instead.
+
+Illegal:
+
+```javascript
+var a1 = new Array(x1, x2, x3);
+var a2 = new Array(x1, x2);
+var a3 = new Array(x1);
+var a4 = new Array();
+```
+
+This works as expected except for the third case: if `x1` is a whole number
+then `a3` is an array of size `x1` where all elements are `undefined`. If `x1`
+is any other number, then an exception will be thrown, and if it is anything
+else then it will be a single-element array.
+
+Instead, write
+
+```javascript
+var a1 = [x1, x2, x3];
+var a2 = [x1, x2];
+var a3 = [x1];
+var a4 = [];
+```
+
+Explicitly allocating an array of a given length using `new Array(length)` is allowed when appropriate.
+
+### 5.2.3 Non-numeric properties
+
+Do not define or use non-numeric properties on an array (other than `length`).
+Use a `Map` (or `Object`) instead.
+
+### 5.2.4 Dstructuring
+
+We do not currently support ECMA Script 6 syntax for class literals due to
+[browser incompatibilities](https://kangax.github.io/compat-table/es6/). 
+
+
+### 5.2.5 Spread operator
+
+We do not currently support ECMA Script 6 syntax for class literals due to
+[browser incompatibilities](https://kangax.github.io/compat-table/es6/). 
+
+
+## 5.3 Object literals
+
+### 5.3.1 Use trailing commas
+
+Include a trailing comma whenever there is a line break between the final property and the closing brace.
+
+### 5.3.2 Do not use the `Object` constructor
+
+While `Object` does not have the same problems as `Array`, it is still disallowed for consistency. Use an object literal (`{}` or `{a: 0, b: 1, c: 2}`) instead.
+
+### 5.3.3 Do not mix quoted and unquoted keys
+
+Object literals may represent either structs (with unquoted keys and/or symbols) or dicts (with quoted and/or computed keys). Do not mix these key types in a single object literal.
+
+Illegal:
+
+```javascript
+{
+  a: 42, // struct-style unquoted key
+  'b': 43, // dict-style quoted key
+}
+```
+
+### 5.3.4 Computed property names
+
+Computed property names (e.g. `{['key' + foo()]: 42}`) are allowed, and are
+considered dict-style (quoted) keys (i.e., must not be mixed with non-quoted
+keys) unless the computed property is a symbol (e.g., `[Symbol.iterator]`). Enum
+values may also be used for computed keys, but should not be mixed with
+non-enum keys in the same literal.
+
+### 5.3.5 Method shorthand
+
+We do not currently support ECMA Script 6 syntax for class literals due to
+[browser incompatibilities](https://kangax.github.io/compat-table/es6/). 
+
+### 5.3.6 Shorthand properties
+
+We do not currently support ECMA Script 6 syntax for class literals due to
+[browser incompatibilities](https://kangax.github.io/compat-table/es6/). 
+
+### 5.3.7 Destructuring
+
+We do not currently support ECMA Script 6 syntax for class literals due to
+[browser incompatibilities](https://kangax.github.io/compat-table/es6/). 
+
+### 5.3.8 Enums
+
+Enumerations are defined by adding the `@enum` annotation to an object literal.
+Additional properties may not be added to an enum after it is defined. Enums
+must be constant, and all enum values must be deeply immutable.
+
+```javascript
+/**
+ * Supported temperature scales.
+ * @enum {string}
+ */
+var TemperatureScale = {
+  CELSIUS: 'celsius',
+  FAHRENHEIT: 'fahrenheit',
+};
+
+/**
+ * An enum with two options.
+ * @enum {number}
+ */
+var Option = {
+  /** The option used shall have been the first. */
+  FIRST_OPTION: 1,
+  /** The second among two options. */
+  SECOND_OPTION: 2,
+};
+```
+
+## 5.4 Classes
+
+TBD
+
 # 6. Naming
 
 # 7. JSDoc
