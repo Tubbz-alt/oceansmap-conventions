@@ -1156,6 +1156,129 @@ required by a third-party API).
 
 # 6. Naming
 
+## 6.1 Rules common to all identifiers
+
+Identifiers use only ASCII letters and digits, and, in a small number of cases noted below, underscores and very rarely (when required by frameworks like Angular) dollar signs.
+
+Give as descriptive a name as possible, within reason. Do not worry about
+saving horizontal space as it is far more important to make your code
+immediately understandable by a new reader. Do not use abbreviations that are
+ambiguous or unfamiliar to readers outside your project, and do not abbreviate
+by deleting letters within a word.
+
+```javascript
+priceCountReader      // No abbreviation.
+numErrors             // "num" is a widespread convention.
+numDnsConnections     // Most people know what "DNS" stands for.
+```
+
+Illegal:
+
+```javscript
+n                     // Meaningless.
+nErr                  // Ambiguous abbreviation.
+nCompConns            // Ambiguous abbreviation.
+wgcConnections        // Only your group knows what this stands for.
+pcReader              // Lots of things can be abbreviated "pc".
+cstmrId               // Deletes internal letters.
+kSecondsPerDay        // Do not use Hungarian notation.
+```
+
+## 6.2 Rules by identifier type
+
+### 6.2.1 Package names
+
+OceansMap does not use packages.
+
+### 6.2.2 Class names
+
+Class, interface, record, and typedef names are written in `UpperCamelCase` or
+`PascalCase`.  Unexported classes are simply locals: they are not marked
+`@private` and therefore are not named with a trailing underscore.
+
+Type names are typically nouns or noun phrases. For example, `Request`, `ImmutableList`, or `VisibilityMode`. Additionally, interface names may sometimes be adjectives or adjective phrases instead (for example, `Readable`).
+
+### 6.2.3 Method names
+
+Method names are written in `lowerCamelCase`. Private methods' names must end with a trailing underscore.
+
+Method names are typically verbs or verb phrases. For example, `sendMessage` or
+`stop_`. Getter and setter methods for properties are never required, but if
+they are used they should be named `getFoo` (or optionally `isFoo` or `hasFoo`
+for booleans), or `setFoo(value)` for setters.
+
+
+### 6.2.4 Enum names
+
+Enum names are written in `UpperCamelCase`, similar to classes, and should generally be singular nouns. Individual items within the enum are named in `CONSTANT_CASE`.
+
+### 6.2.5 Constant names
+
+Constant names use `CONSTANT_CASE`: all uppercase letters, with words separated
+by underscores. There is noreason for a constant to be named with a trailing
+underscore, since private static properties can be replaced by (implicitly
+private) module locals.
+
+### 6.2.6 Non-constant field names
+
+Non-constant field names (static or otherwise) are written in `lowerCamelCase`, with a trailing underscore for private fields.
+
+These names are typically nouns or noun phrases. For example, `computedValues` or `index_`.
+
+### 6.2.7 Parameter names
+
+Parameter names are written in `lowerCamelCase`. Note that this applies even if the parameter expects a constructor.
+
+One-character parameter names **ARE STRICTLY FORBIDDEN**
+
+**Exception**: When required by a third-party framework, parameter names may begin with a `$`. This exception does not apply to any other identifiers (e.g. local variables or properties).
+
+
+### 6.2.8 Local variable names
+
+Local variable names are written in `lowerCamelCase`, except for module-local
+(top-level) constants, as described above. Constants in function scopes are
+still named in `lowerCamelCase`. Note that `lowerCamelCase` applies even if the
+variable holds a constructor.
+
+### 6.2.9 Template parameter names
+
+Template parameter names should be concise, single-word or single-letter identifiers, and must be all-caps, such as `TYPE` or `THIS`.
+
+## 6.3 Camel case: defined
+
+Sometimes there is more than one reasonable way to convert an English phrase
+into camel case, such as when acronyms or unusual constructs like IPv6 or iOS
+are present. To improve predictability, this style guide specifies the following
+(nearly) deterministic scheme.
+
+1. Convert the phrase to plain ASCII and remove any apostrophes. For example, Müller's algorithm might become Muellers algorithm.
+2. Divide this result into words, splitting on spaces and any remaining punctuation (typically hyphens).
+    1. Recommended: if any word already has a conventional camel case appearance in common usage, split this into its constituent parts (e.g., AdWords becomes ad words). Note that a word such as iOS is not really in camel case per se; it defies any convention, so this recommendation does not apply.
+3. Now lowercase everything (including acronyms), then uppercase only the first character of:
+    1. … each word, to yield upper camel case, or
+    2. … each word except the first, to yield lower camel case
+4. Finally, join all the words into a single identifier.
+
+Note that the casing of the original words is almost entirely disregarded.
+
+Examples:
+
+| Prose form            | Correct           | Incorrect         |
+|-----------------------|-------------------|-------------------|
+| XML HTTP request      | XmlHttpRequest    | XMLHTTPRequest    |
+| new customer ID       | newCustomerId     | newCustomerID     |
+| inner stopwatch       | innerStopwatch    | innerStopWatch    |
+| supports IPv6 on iOS? | supportsIpv6OnIos | supportsIPv6OnIOS |
+| YouTube importer      | YouTubeImporter   | YoutubeImporter*  |
+
+\*Acceptable, but not recommended.
+
+<p class="note">
+Note: Some words are ambiguously hyphenated in the English language: for example nonempty and non-empty are both correct, so the method names checkNonempty and checkNonEmpty are likewise both correct.
+</p>
+
+
 # 7. JSDoc
 
 # 8. Policies
