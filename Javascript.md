@@ -1282,6 +1282,206 @@ Note: Some words are ambiguously hyphenated in the English language: for example
 
 # 7. JSDoc
 
+[JSDoc](https://developers.google.com/closure/compiler/docs/js-for-compiler) is used on all classes, fields, and methods.
+
+## 7.1 General form
+
+The basic formatting of JSDoc blocks is as seen in the example:
+
+```javascript
+/**
+ * Multiple lines of JSDoc text are written here,
+ * wrapped normally.
+ * @param {number} arg A number to do something to.
+ */
+function doSomething(arg) { … }
+```
+
+or in this single-line example:
+
+```javascript
+/** @const @private {!Foo} A short bit of JSDoc. */
+this.foo_ = foo;
+```
+
+If a single-line comment overflows into multiple lines, it must use the
+multi-line style with `/** and */` on their own lines.
+
+Many tools extract metadata from JSDoc comments to perform code validation and
+optimization. As such, these comments must be well-formed.
+
+## 7.2 Markdown
+
+JSDoc is written in Markdown, though it may include HTML when necessary.
+
+Note that tools that automatically extract JSDoc (e.g. [JsDossier](https://github.com/jleyba/js-dossier)) will often ignore plain text formatting, so if you did this:
+
+Illegal:
+
+```javascript
+/**
+ * Computes weight based on three factors:
+ *   items sent
+ *   items received
+ *   last timestamp
+ */
+```
+
+it would come out like this:
+
+```
+Computes weight based on three factors: items sent items received last timestamp
+```
+
+Instead, write a Markdown list:
+
+```javascript
+/**
+ * Computes weight based on three factors:
+ *  - items sent
+ *  - items received
+ *  - last timestamp
+ */
+```
+
+## 7.3 JSDoc tags
+
+This style guide allows a subset of JSDoc tags. See 9.1 JSDoc tag reference for
+the complete list. Most tags must occupy their own line, with the tag at the
+beginning of the line.
+
+Illegal:
+
+```javascript
+/**
+ * The "param" tag must occupy its own line and may not be combined.
+ * @param {number} left @param {number} right
+ */
+function add(left, right) { ... }
+```
+
+Simple tags that do not require any additional data (such as `@private`,
+`@const`, `@final`, `@export`) may be combined onto the same line, along with
+an optional type when appropriate.
+
+```javascript
+/**
+ * Place more complex annotations (like "implements" and "template")
+ * on their own lines.  Multiple simple tags (like "export" and "final")
+ * may be combined in one line.
+ * @export @final
+ * @implements {Iterable<TYPE>}
+ * @template TYPE
+ */
+class MyClass {
+  /**
+   * @param {!ObjType} obj Some object.
+   * @param {number=} num An optional number.
+   */
+  constructor(obj, num = 42) {
+    /** @private @const {!Array<!ObjType|number>} */
+    this.data_ = [obj, num];
+  }
+}
+```
+
+There is no hard rule for when to combine tags, or in which order, but be consistent.
+
+For general information about annotating types in JavaScript see 
+[Annotating JavaScript for the Closure Compiler](https://github.com/google/closure-compiler/wiki/Annotating-JavaScript-for-the-Closure-Compiler)
+and [Types in the Closure Type System](https://github.com/google/closure-compiler/wiki/Types-in-the-Closure-Type-System).
+
+
+## 7.4 Line wrapping
+
+Line-wrapped block tags are indented four spaces. Wrapped description text may be lined up with the description on previous lines, but this horizontal alignment is discouraged.
+
+```javascript
+/**
+ * Illustrates line wrapping for long param/return descriptions.
+ * @param {string} foo This is a param with a description too long to fit in
+ *     one line.
+ * @return {number} This returns something that has a description too long to
+ *     fit in one line.
+ */
+exports.method = function(foo) {
+  return 5;
+};
+```
+
+Do not indent when wrapping a `@fileoverview` description.
+
+## 7.5 Top/file-level comments
+
+A file may have a top-level file overview. A copyright notice , author
+information, and default 
+[visibility level](https://google.github.io/styleguide/jsguide.html#visibility-annotations)
+are optional. File overviews are generally recommended whenever a file consists
+of more than a single class definition. The top level comment is designed to
+orient readers unfamiliar with the code to what is in this file. If present, it
+may provide a description of the file's contents and any dependencies or
+compatibility information. Wrapped lines are not indented.
+
+Example:
+
+```javascript
+/**
+ * @fileoverview Description of file, its uses and information
+ * about its dependencies.
+ * @package
+ */
+```
+
+## 7.6 Class comments
+
+Classes, interfaces and records must be documented with a description and any
+template parameters, implemented interfaces, visibility, or other appropriate
+tags. The class description should provide the reader with enough information
+to know how and when to use the class, as well as any additional considerations
+necessary to correctly use the class. Textual descriptions may be omitted on
+the constructor. `@constructor` and `@extends` annotations are not used with the
+class keyword unless the class is being used to declare an `@interface` or it
+extends a generic class.
+
+
+```javascript
+/**
+ * A fancier event target that does cool things.
+ * @implements {Iterable<string>}
+ */
+class MyFancyTarget extends EventTarget {
+  /**
+   * @param {string} arg1 An argument that makes this more interesting.
+   * @param {!Array<number>} arg2 List of numbers to be processed.
+   */
+  constructor(arg1, arg2) {
+    // ...
+  }
+};
+
+/**
+ * Records are also helpful.
+ * @extends {Iterator<TYPE>}
+ * @record
+ * @template TYPE
+ */
+class Listable {
+  /** @return {TYPE} The next item in line to be returned. */
+  next() {}
+}
+```
+
+<p class="note">
+Note: this example uses ES6 syntax which is not currently supported.
+</p>
+
+## 7.7 Enum and typedef comments
+
+Enums and typedefs must be documented. Publci enums and typedefs must have a
+non-empty description. Individual enum items may be documented with a JSDoc
+comment on the preceding line.
+
+
 # 8. Policies
 
 # 9. Appendices
