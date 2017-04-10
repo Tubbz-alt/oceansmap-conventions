@@ -856,6 +856,304 @@ var Option = {
 
 TBD
 
+## 5.5 Functions
+
+### 5.5.1 Top-level functions
+
+Exported functions may be declared locally and exported separately. Non-exported functions are encouraged and should not be declared @private.
+
+Examples:
+
+```javascript
+/** @return {number} */
+function helperFunction() {
+  return 42;
+}
+/** @return {number} */
+function exportedFunction() {
+  return helperFunction() * 2;
+}
+/**
+ * @param {string} arg
+ * @return {number}
+ */
+function anotherExportedFunction(arg) {
+  return helperFunction() / arg.length;
+}
+```
+
+### 5.5.2 Nested functions and closures
+
+Functions may contain nested function definitions. If it is useful to go give teh function a name, it should be assigned to a local `var`.
+
+### 5.5.3 Arrow functions
+
+We do not currently support ECMA Script 6 syntax for class literals due to
+[browser incompatibilities](https://kangax.github.io/compat-table/es6/). 
+
+### 5.5.4 Generators
+
+We do not currently support ECMA Script 6 syntax for class literals due to
+[browser incompatibilities](https://kangax.github.io/compat-table/es6/). 
+
+### 5.5.5 Parameters
+
+Function parameters must be typed with JSDoc annotations in the JSDoc preceding
+the function’s definition, except in the case of same-signature `@overrides`,
+where all types are omitted.
+
+For anonymous functions (unnamed function expressions), parameter
+types may be specified inline, immediately before the parameter name. This is
+not allowed for other functions, including class methods and those that are
+assigned to variables or properties, in which case the parameter and/or return
+type annotations must be specified on the field, variable, or method.
+
+Illegal:
+
+```javascript
+var func = function(/** number */ foo) {
+  return 2 * foo;
+});
+```
+
+Better:
+
+```javscript
+/**
+ * @param {number} foo
+ */
+var func = function(foo) {
+  return 2 * foo;
+});
+```
+
+### 5.5.5.1 Default Parameters
+
+We do not currently support ECMA Script 6 syntax for class literals due to
+[browser incompatibilities](https://kangax.github.io/compat-table/es6/). 
+
+#### 5.5.5.2 Rest parameters
+
+We do not currently support ECMA Script 6 syntax for class literals due to
+[browser incompatibilities](https://kangax.github.io/compat-table/es6/). 
+
+### 5.5.6 Retruns
+
+Function return types must be specified in the JSDoc directly above the
+function definition, except in the case of same-signature `@override`s where
+all types are omitted.
+
+### 5.5.7 Generics
+
+TBD
+
+### 5.5.8 Spread operator
+
+We do not currently support ECMA Script 6 syntax for class literals due to
+[browser incompatibilities](https://kangax.github.io/compat-table/es6/). 
+
+## 5.6 String literals
+
+### 5.6.1 Use single quotes
+
+Ordinary string literals are delimited with single quotes (`'`), rather than double quotes (`"`).
+
+<p class="tip">
+  Tip: if a string contains a single quote character, consider using a template string to avoid having to escape the quote.
+</p>
+
+Ordinary string literals may not span multiple lines.
+
+
+### 5.6.2 Template strings
+
+We do not currently support ECMA Script 6 syntax for class literals due to
+[browser incompatibilities](https://kangax.github.io/compat-table/es6/). 
+
+### 5.6.3 No line continuations
+
+Do not use *line continuations* (that is, ending a line inside a string literal
+with a backslash) in either ordinary or template string literals. Even though
+ES5 allows this, it can lead to tricky errors if any trailing whitespace comes
+after the slash, and is less obvious to readers.
+
+Illegal:
+```javascript
+var longString = 'This is a very long string that far exceeds the 80 \
+    column limit. It unfortunately contains long stretches of spaces due \
+    to how the continued lines are indented.';
+```
+
+Instead, write:
+
+```javascript
+var longString = 'This is a very long string that far exceeds the 80 ' +
+    'column limit. It does not contains long stretches of spaces since ' +
+    'the concatenated strings are cleaner.';
+```
+
+## 5.7 Number literals
+
+Numbers may be specified in decimal, hex, octal, or binary. Use exactly `0x`,
+`0o`, and `0b` prefixes, with lowercase letters, for hex, octal, and binary,
+respectively. Never include a leading zero unless it is immediately followed by
+`x`, `o`, or `b`.
+
+### 5.8 Control structures
+
+### 5.8.1 For loops
+
+The only for loop supported, due to browser support, is the classic ES5 for loop.
+
+```javscript
+
+for(var i = 0; i < items.length; i++) {
+  var item = items[i];
+  // ...
+}
+```
+
+### 5.8.2 Exceptions
+
+Exceptions are an important part of the language and should be used whenever
+exceptional cases occur. Always throw `Error`s or subclasses of `Error`: never
+throw string literals or other objects. Always use new when constructing an
+`Error`.
+
+Custom exceptions provide a great way to convey additional error information
+from functions. They should be defined and used whenever the native `Error`
+type is insufficient.
+
+Prefer throwing exceptions over ad-hoc error-handling approaches (such as
+passing an error container reference type, or returning an object with an error
+property).
+
+#### 5.8.2.1 Empty catch blocks
+
+It is very rarely correct to do nothing in response to a caught exception. When it truly is appropriate to take no action whatsoever in a catch block, the reason this is justified is explained in a comment.
+
+```javascript
+try {
+  return handleNumericResponse(response);
+} catch (ok) {
+  // it's not numeric; that's fine, just continue
+}
+return handleTextResponse(response);
+```
+
+Illegal:
+
+```javascript
+   try {
+    shouldFail();
+    fail('expected an error');
+  }
+  catch (expected) {}
+```
+
+<p class="tip">
+Tip: Unlike in some other languages, patterns like the above simply don’t work since this will catch the error thrown by fail. Use assertThrows() instead.
+</p>
+
+### 5.8.3 Switch statements
+
+Terminology Note: Inside the braces of a switch block are one or more statement
+groups. Each statement group consists of one or more switch labels (either
+`case FOO:` or `default:`), followed by one or more statements.
+
+#### 5.8.3.1 Fall-through: commented
+
+Within a switch block, each statement group either terminates abruptly (with a
+`break`, `return` or thrown exception), or is marked with a comment to indicate
+that execution will or might continue into the next statement group. Any
+comment that communicates the idea of fall-through is sufficient 
+(typically `// fall through`). This special comment is not required in the last
+statement group of the switch block.
+
+Example:
+
+```javascript
+switch (input) {
+  case 1:
+  case 2:
+    prepareOneOrTwo();
+    // fall through
+  case 3:
+    handleOneTwoOrThree();
+    break;
+  default:
+    handleLargeNumber(input);
+}
+```
+
+#### 5.8.3.2 The `default` case is present
+
+Each switch statement includes a `default` statement group, even if it contains no code.
+
+## 5.9 this
+
+Only use `this` in class constructors and methods. Any other uses of `this`
+must have an explicit `@this` declared in the immediately-enclosing function's
+JSDoc.
+
+Never use `this` to refer to the global object, the context of an `eval`, the
+target of an event, or unnecessarily `call()`ed or `apply()`ed functions.
+
+## 5.10 Disallowed features
+
+### 5.10.1 with
+
+Do not use the with keyword. It makes your code harder to understand and has been banned in strict mode since ES5.
+
+### 5.10.2 Dynamic code evaluation
+
+Do not use `eval` or the `Function(...string)` constructor (except for code loaders). These features are potentially dangerous and simply do not work in CSP environments.
+
+### 5.10.3 Automatic semicolon insertion
+
+Always terminate statements with semicolons (except function and class declarations, as noted above).
+
+### 5.10.4 Non-standard features
+
+Do not use non-standard features. This includes old features that have been
+removed (e.g., `WeakMap.clear`), new features that are not yet standardized
+(e.g., the current TC39 working draft, proposals at any stage, or proposed but
+not-yet-complete web standards), or proprietary features that are only
+implemented in some browsers. Use only features defined in the current ECMA-262
+or WHATWG standards. (Note that projects writing against specific APIs, such as
+Chrome extensions or Node.js, can obviously use those APIs). Non-standard
+language “extensions” (such as those provided by some external transpilers) are
+forbidden.
+
+### 5.10.5 Wrapper objects for primitive types
+
+Never use `new` on the primitive object wrappers (`Boolean`, `Number`, `String`, `Symbol`), nor include them in type annotations.
+
+Illegal:
+
+```javascript
+var /** Boolean */ x = new Boolean(false);
+if (x) alert(typeof x);  // alerts 'object' - WAT?
+```
+
+Example:
+
+```javascript
+var /** boolean */ x = Boolean(0);
+if (!x) alert(typeof x);  // alerts 'boolean', as expected
+```
+
+### 5.10.6 Modifying builting objects
+
+Never modify builtin types, either by adding methods to their constructors or
+to their prototypes. Avoid depending on libraries that do this. Note that the
+JSCompiler’s runtime library will provide standards-compliant polyfills where
+possible; nothing else may modify builtin objects.
+
+Do not add symbols to the global object unless absolutely necessary (e.g.
+required by a third-party API).
+
+
 # 6. Naming
 
 # 7. JSDoc
