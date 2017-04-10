@@ -676,6 +676,13 @@ TODO(b/6002235): remove the "Last visitors" feature
 
 # 5. Language Features
 
+## 5.1 Local variable declarations
+
+### 5.1.1 Use of `const` and `let`
+
+We do not currently support ECMA Script 6 syntax for class literals due to
+[browser incompatibilities](https://kangax.github.io/compat-table/es6/). 
+
 # 6. Naming
 
 # 7. JSDoc
