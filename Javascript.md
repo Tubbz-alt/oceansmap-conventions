@@ -1243,7 +1243,8 @@ variable holds a constructor.
 
 ### 6.2.9 Template parameter names
 
-Template parameter names should be concise, single-word or single-letter identifiers, and must be all-caps, such as `TYPE` or `THIS`.
+We do not currently support ECMA Script 6 syntax for class literals due to
+[browser incompatibilities](https://kangax.github.io/compat-table/es6/). 
 
 ## 6.3 Camel case: defined
 
