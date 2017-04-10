@@ -6,6 +6,21 @@ developing OceansMap in a distributed environment.
 Copyright 2017 RPS Group Plc
 See LICENSE for details
 
+<style>
+.tip {
+  background-color: #fffbd9;
+  padding: 6px 8px 6px 10px;
+  border-left: 6px solid #ffef70;
+}
+
+.note {
+  background-color: #e5ecf9;
+  padding: 6px 8px 6px 10px;
+  border-left: 6px solid #36c;
+}
+
+</style>
+
 This document is a modified version of Google's Javascript style guide. The
 structure and language of the document is very similar to Google's but
 modifications have been made where deemed suitable by the author(s). Google, in
@@ -112,14 +127,6 @@ For the remaining non-ASCII characters, either the actual Unicode character
 (e.g. ∞) or the equivalent hex or Unicode escape (e.g. `\u221e`) is used,
 depending only on which makes the code **easier to read and understand**.
 
-<style>
-.tip {
-  background-color: #fffbd9;
-  padding: 6px 8px 6px 10px;
-  border-left: 6px solid #ffef70;
-}
-
-</style>
 <p class="tip">
 Tip: In the Unicode escape case, and occasionally even when the actual Unicode
 characters are used, an explanatory comment can be very helpful.
@@ -374,6 +381,282 @@ Every statement must be terminated with a semicolon. Relying on automatic semico
 To be discussed and determined later. For now try to keep statements under 80
 except where it's not impossible (for example a long URL) or when doing so
 would reduce code readability.
+
+## 4.5 Line-wrapping
+
+**Terminology note:** *line-wrapping* is defined as breaking a single
+expression into multiple lines.
+
+There is no comprehensive, deterministic formula showing *exactly* how to
+line-wrap in every situation. Very often there are several valid ways to
+line-wrap the same piece of code.
+
+<p class="note">
+Note: While the typical reason for line-wrapping is to avoid overflowing the
+column limit, even code that would in fact fit within the column limit may be
+line-wrapped at the author's discretion.
+</p>
+
+<p class="tip">
+Tip: Extracting a method or local variable may solve the problem without the need to line-wrap.
+</p>
+
+### 4.5.1 Where to break
+
+The prime directive of line-wrapping is: prefer to break at a **higher syntactic level**. Also:
+
+1. When a line is broken at an operator the break comes after the symbol. (Note
+   that this is not the same practice used for Java)
+2. A method or constructor name stays attached to the open parenthesis (`(`)
+   that follows it.
+3. A comma (`,`) stays attached to the token that precedes it
+
+Preferred:
+
+```javascript
+this.foo =
+    foo(
+        firstArg,
+        1 + someLongFunctionName());
+```
+
+Discouraged:
+
+```javascript
+this.foo = foo(firstArg, 1 +
+    someLongFunctionName());
+```
+
+In the preceding example, the syntactic levels from highest to lowest are as
+follows: assignment, outer function call, parameters, plus, inner function
+call.
+
+<p class="note">
+Note: The primary goal for line wrapping is to have clear code, not necessarily code that fits in the smallest number of lines.
+</p>
+
+### 4.5.2 Indent continuation lines at least +4 spaces
+
+When line-wrapping, each line after the first (each *continuation line*) is indented at least +4 from the original line, unless it falls under the rules of block indentation.
+
+When there are multiple continuation lines, indentation may be varied beyond +4
+as appropriate. In general, continuation lines at a deeper syntactic level are
+indented by larger multiples of 4, and two lines use the same indentation level
+if and only if they begin with syntactically parallel elements.
+
+
+## 4.6 Whitespace
+
+### 4.6.1 Vertical whitespace
+
+A single blank line appears:
+
+1. Between consecutive methods in a class or object literal
+
+  1. Exception: A blank line between two consecutive properties definitions in
+     an object lietral (with no other code between them)  is optional. Such
+     blank lines are used as needed to create *logical groupings* of fields.
+
+2. Within method bodies, sparingly to create *logical groupings* of statements.
+   Blank lines at the start or end of a function body are not allowed.
+
+3. *Optionally* before the first or after the last method in a class or object
+   literal (neither encouraged nor discouraged).
+
+4. As required by other sections of this document.
+
+*Multiple* consecutive line blanks are permitted, but never required.
+
+
+### 4.6.2 Horizontal Whitespace
+
+Use of horizontal whitespace depends on location, and falls into three broad
+categories: *leading* (at the start of a line), *trailing* (at the end of a line),
+and *internal*. Leading whitespace (i.e., indentation) is addressed elsewhere.
+**Trailing whitespace is forbidden**.
+
+1. Separating any reserved word (such as `if`, `for`, or `catch`) from an open
+   parenthesis (`(`) that follows it on that line.
+
+2. Separating any reserved word (such as `else` or `catch`) from a closing
+   curly brace (`}`) that precedes it on that line.
+
+3. Before any open curly brance (`{`), with two exceptions:
+
+   1. Before an object literal that is the first argument of a function or the first element in an array literal (e.g. `foo({a: [{c: d}]})`)
+
+4. On both sides of any binary or ternary operator.
+
+5. After a comma (`,`) or semicolon (`;`). Note that spaces are *never* allowed before these characters.
+6. After the colon (`:`) in an object literal.
+7. On both sides of the double slash (`//`) that begins an end-of-line comment. Here, multiple spaces are allowed, but not required.
+8. After an open-JSDoc comment character and on both sides of the close
+   characters (e.g. for short-form type declarations or casts: `this.foo = /** @type {number} */ (bar);` 
+   or `function(/** string */ foo) {`).
+
+### 4.6.3 Rectangle Rule
+
+All code should follow the Rectangle Rule.
+
+<p class="tip">
+  <i>
+    When a source file is formatted, each subtree gets its own bounding
+    rectangle, containing all of that subtree's text and none of any other
+    subtree's
+  </i>
+</p>
+
+What does this mean? Take the well formatted example below, and draw a
+rectangle around just the subexpression `x / currentEstimate`:
+
+```javascript
+currentEstimate = 
+    (currentEstimate + x / currentEstimate)
+        / 2.0f;
+```
+
+This is possible—good! But in the badly formatted example, there is no
+rectangle containing just that subexpression and nothing more—bad!
+
+```javascript
+currentEstimate = (currentEstimate + x
+        / currentEstimate) / 2.0f;
+```
+
+In the well formatted example, every subtree has its own rectangle; for
+instance, the right-hand side (RHS) of the assignment has its own rectangle in
+the well formatted example, but not in the other. This promotes readability by
+exposing program structure in the physical layout; the RHS is in just one
+place, not partly in one place and partly another.
+
+### 4.6.4 Horizontal alignment: discouraged
+
+**Terminology Note:** *Horizontal alignment* is the practice of adding a
+variable number of additional spaces in your code with the goal of making
+certain tokens appear directly below certain other tokens on previous lines.
+
+This practice is permitted, but it is **generally discouraged**. It is not even
+required to *maintain* horizontal alignment in places where it was already
+used.
+
+Here is an example without alignment, followed by one with alignment. Both are
+allowed, but the latter is discouraged.
+
+```javascript
+{
+  tiny: 42, // this is great
+  longer: 435, // this too
+};
+
+{
+  tiny:   42,  // permitted, but future edits
+  longer: 435, // may leave it unaligned
+};
+```
+
+<p class="tip">
+Tip: Alignment can aid readability, but it creates problems for future
+maintenance. Consider a future change that needs to touch just one line. This
+change may leave the formerly-pleasing formatting mangled, and that is allowed.
+More often it prompts the coder (perhaps you) to adjust whitespace on nearby
+lines as well, possibly triggering a cascading series of reformattings. That
+one-line change now has a blast radius. This can at worst result in pointless
+busywork, but at best it still corrupts version history information, slows down
+reviewers and exacerbates merge conflicts.
+</p>
+
+### 4.6.5 Function arguments
+
+Prefer to put all function arguments on the same line as the function name. If
+doing so would exceed the 80-column limit, the arguments must be line-wrapped
+in a readable way. To save space, you may wrap as close to 80 as possible, or
+put each argument on its own line to enhance readability. Indentation should be
+four spaces. Aligning to the parenthesis is allowed, but discouraged. Below are
+the most common patterns for argument wrapping:
+
+```javascript
+// Arguments start on a new line, indented four spaces. Preferred when the
+// arguments don't fit on the same line with the function name (or the keyword
+// "function") but fit entirely on the second line. Works with very long
+// function names, survives renaming without reindenting, low on space.
+doSomething(
+    descriptiveArgumentOne, descriptiveArgumentTwo, descriptiveArgumentThree) {
+  // …
+}
+
+// If the argument list is longer, wrap at 80. Uses less vertical space,
+// but violates the rectangle rule and is thus not recommended.
+doSomething(veryDescriptiveArgumentNumberOne, veryDescriptiveArgumentTwo,
+    tableModelEventHandlerProxy, artichokeDescriptorAdapterIterator) {
+  // …
+}
+
+// Four-space, one argument per line.  Works with long function names,
+// survives renaming, and emphasizes each argument.
+doSomething(
+    veryDescriptiveArgumentNumberOne,
+    veryDescriptiveArgumentTwo,
+    tableModelEventHandlerProxy,
+    artichokeDescriptorAdapterIterator) {
+  // …
+}
+```
+
+## 4.7 Grouping parentheses: recommended
+
+Optional grouping parentheses are omitted only when the author and reviewer
+agree that there is no reasonable chance that the code will be misinterpreted
+without them, nor would they have made the code easier to read. It is *not*
+reasonable to assume that every reader has the entire operator precedence table
+memorized.
+
+Do not use unnecessary parentheses around the entire expression following
+`delete`, `typeof`, `void`, `return`, `throw`, `case`, `in`, or `of`.
+
+Parentheses are required for type casts: `/** @type {!Foo} */ (foo)`.
+
+## 4.8 Comments
+
+This section addresses *implementation comments*. JSDoc is addressed separately.
+
+
+### 4.8.1 Block comment style
+
+Block comments are indented at the same level as the surrounding code. They may
+be in `/* … */` or `//`-style. For multi-line `/* … */` comments, subsequent lines
+must start with `*` aligned with the `*` on the previous line, to make comments
+obvious with no extra context. “Parameter name” comments should appear after
+values whenever the value and method name do not sufficiently convey the
+meaning.
+
+
+```javascript
+/*
+ * This is
+ * okay.
+ */
+
+// And so
+// is this.
+
+/* This is fine, too. */
+
+someFunction(obviousParam, true /* shouldRender */, 'hello' /* name */);
+```
+
+Comments are not enclosed in boxes drawn with asterisks or other characters.
+
+Do not use JSDoc (`/** … */`) for any of the above implementation comments.
+
+```javascript
+TODO(username): comment
+TODO(b/buganizer_id): comment
+```
+
+```javascript
+TODO(tashana): Remove this code after the UrlTable2 has been checked in.
+TODO(b/6002235): remove the "Last visitors" feature
+```
 
 # 5. Language Features
 
