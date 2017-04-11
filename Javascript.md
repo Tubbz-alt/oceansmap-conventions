@@ -1673,5 +1673,96 @@ of a module. All `@private` names must end with an underscore.
 
 # 8. Policies
 
+The policies section describes patterns and practices within use of OceansMap.
+
+## 8.1 Nested Anonymous Functions
+
+Anonymous functions should not be nested inside function arguments.
+
+Illegal:
+
+```javascript
+var bestItems = _.map(
+    _.filter(itmes, function(item) {
+      return item.property === "thing" && shouldFilter;
+    }), function(item) {
+      return {name: item.name, value: item.value};
+    });
+
+```
+
+Example:
+
+```javascript
+/** 
+  * An array of ItemModels where the property is "thing".
+  * @type {Array<ItemModel>} 
+  */
+var filteredItems = _.filter(items, function(item) {
+  return item.property === "thing" && shouldFilter;
+});
+
+/** 
+  * An array of objects containing name and value of the filtered ItemModels.
+  * @type {Array<Object>} 
+  */
+var bestItems = _.map(filteredItems, function(item) {
+  return {name: item.name, value: item.value};
+});
+```
+
+## 8.2 Inline Conditionls
+
+Inline conditionals are allowed but discouraged for readability reasons.
+
+```javascript
+var itemCount = items && items.length ? items.length : 0;
+```
+
+Is a little bit harder to read than:
+
+```javascript
+var itemCount = 0;
+
+if (items && items.length) {
+  itemCount = items.length;
+}
+```
+
+Albeit the latter is more verbose but more clear.
+
+Using conditionals where the values returned by the evaluation of the conditionals are JavaScript expressions are **strictly forbidden**.
+
+Illegal:
+
+```javscript
+// Illegal because of the operator
+var itemCount = items && items.length ? items.length + 2 : 0;
+```
+
+## 8.3 RegEx Comparisons
+
+Regular Expression (RegEx) comparisons through the `.test()` method should be
+done sparingly and only when strictly needed. RegEx operations are not highly
+optimized and where done carelessly could decrease performance.
+
+Illegal:
+
+```javascript
+if (!/geojson/.test(catalogModel.get('type'))) {
+  // ...
+}
+```
+
+Instead use `indexOf` in this case
+
+```javascript
+
+if (catalogModel.get('type').indexOf('geojson') < 0) {
+  // ...
+}
+```
+
+
 # 9. Appendices
 
