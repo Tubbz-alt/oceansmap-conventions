@@ -1481,6 +1481,195 @@ Enums and typedefs must be documented. Publci enums and typedefs must have a
 non-empty description. Individual enum items may be documented with a JSDoc
 comment on the preceding line.
 
+```javascript
+/**
+ * A useful type union, which is reused often.
+ * @typedef {!Bandersnatch|!BandersnatchType}
+ */
+var CoolUnionType;
+
+
+/**
+ * Types of bandersnatches.
+ * @enum {string}
+ */
+var BandersnatchType = {
+  /** This kind is really frumious. */
+  FRUMIOUS: 'frumious',
+  /** The less-frumious kind. */
+  MANXOME: 'manxome',
+};
+```
+Typedefs should be limited to defining aliases for unions or complex function
+or generic types, and should be avoided for record literals (e.g. `@typedef`
+`{{foo: number, bar: string}}`) since it does not allow documenting individual
+fields, nor using templates or recursive references. Prefer `@record` for
+anything beyond the simplest `@typedef`’d record literal.
+
+## 7.8 Method and function comments
+
+Parameter and return types must be documented. The `this` type should be
+documented when necessary. Method, parameter, and return descriptions (but not
+types) may be omitted if they are obvious from the rest of the method’s JSDoc
+or from its signature. Method descriptions should start with a sentence written
+in the third person declarative voice. If a method overrides a superclass
+method, it must include an `@override` annotation. Overridden methods must
+include all `@param` and `@return` annotations if any types are refined, but should
+omit them if the types are all the same.
+
+
+```javascript
+/** This is a class. */
+class SomeClass extends SomeBaseClass {
+  /**
+   * Operates on an instance of MyClass and returns something.
+   * @param {!MyClass} obj An object that for some reason needs detailed
+   *     explanation that spans multiple lines.
+   * @param {!OtherClass} obviousOtherClass
+   * @return {boolean} Whether something occurred.
+   */
+  someMethod(obj, obviousOtherClass) { ... }
+
+  /** @override */
+  overriddenMethod(param) { ... }
+}
+
+/**
+ * Top-level functions follow the same rules.  This one makes an array.
+ * @param {TYPE} arg
+ * @return {!Array<TYPE>}
+ * @template TYPE
+ */
+function makeArray(arg) { ... }
+```
+
+<p class="note">
+  Note: the above example includes ES6 syntax which is not supported in OceansMap
+</p>
+
+Anonymous functions do not require JSDoc, though parameter types may be
+specified inline if the automatic type inference is insufficient.
+
+```javascript
+promise.then(
+    function(/** !Array<number|string> */ items) {
+      doSomethingWith(items);
+      return /** @type {string} */ (items[0]);
+    });
+```
+
+## 7.9 Property comments
+
+Property types must be documented. The description may be omitted for private
+properties, if name and type provide enough documentation for understanding the
+code.
+
+Publicly exported constants are commented the same way as properties. Explicit
+types may be omitted for `@const` properties initialized from an expression with
+an obviously known type.
+
+<p class="tip">
+Tip: A <pre>@const</pre> property’s type can be considered “obviously known” if it is
+assigned directly from a constructor parameter with a declared type, or
+directly from a function call with a declared return type. Non-const properties
+and properties assigned from more complex expressions should have their types
+declared explicitly.
+</p>
+
+
+```javascript
+/** My class. */
+class MyClass {
+  /** @param {string=} someString */
+  constructor(someString = 'default string') {
+    /** @private @const */
+    this.someString_ = someString;
+
+    /** @private @const {!OtherType} */
+    this.someOtherThing_ = functionThatReturnsAThing();
+
+    /**
+     * Maximum number of things per pane.
+     * @type {number}
+     */
+    this.someProperty = 4;
+  }
+}
+
+/**
+ * The number of times we'll try before giving up.
+ * @const
+ */
+MyClass.RETRY_COUNT = 33;
+```
+
+<p class="note">
+  Note: the above example includes ES6 syntax which is not supported in OceansMap
+</p>
+
+## 7.10 Type annotations
+
+Type annotations are found on `@param`, `@return`, `@this`, and `@type` tags,
+and optionally on `@const`, `@export`, and any visibility tags. Type
+annotations attached to JSDoc tags must always be enclosed in braces.
+
+## 7.10.1 Nullability
+
+The type system defines modifiers `!` and `?` for non-null and nullable,
+respectively. Primitive types (`undefined`, `string`, `number`, `boolean`, `symbol`, and
+`function(...): ...`) and record literals (`{foo: string, bar: number}`) are
+non-null by default. Do not add an explicit `!` to these types. Object types
+(`Array`, `Element`, `MyClass`, etc) are nullable by default, but cannot be
+immediately distinguished from a name that is `@typedef`’d to a
+non-null-by-default type. As such, all types except primitives and record
+literals must be annotated explicitly with either `?` or `!` to indicate whether
+they are nullable or not.
+
+## 7.10.2 Type Casts
+
+In cases where type checking doesn't accurately infer the type of an
+expression, it is possible to tighten the type by adding a type annotation
+comment and enclosing the expression in parentheses. Note that the parentheses
+are required.
+
+```javascript
+/** @type {number} */ (x)
+```
+
+## 7.10.3 Template Parameter Types
+
+Always specify template parameters. This way compiler can do a better job and it makes it easier for readers to understand what code does.
+
+Bad:
+
+```javascript
+/** @type {!Object} */ var users;
+/** @type {!Array} */ var books;
+/** @type {!Promise} */ var response;
+```
+
+Good:
+
+```javascript
+/** @type {!Object<string, !User>} */ var users;
+/** @type {!Array<string>} */ var books;
+/** @type {!Promise<!Response>} */ var response;
+
+/** @type {!Promise<undefined>} */ var thisPromiseReturnsNothingButParameterIsStillUseful;
+/** @type {!Object<string, *>} */ var mapOfEverything;
+```
+
+Cases when template parameters should not be used:
+
+- `Object` is used for type hierarchy and not as map-like structure.
+
+## 7.11 Visibility annotations
+
+Visibility annotations (`@private`, `@package`, `@protected`) may be specified in a
+`@fileoverview` block, or on any exported symbol or property. Do not specify
+visibility for local variables, whether within a function or at the top level
+of a module. All `@private` names must end with an underscore.
+
 
 # 8. Policies
 
